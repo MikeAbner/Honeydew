@@ -24,12 +24,13 @@ class ListViewController < UIViewController
 
   def tableView(tableView, cellForRowAtIndexPath:indexPath)
     @cellId = "cell"
-    cell = tableView.dequeueReusableCellWithIdentifier(@cellId) || begin
-      UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:@cellId)
-    end
 
-    cell.textLabel.text = List.get_item_at_index(indexPath.row)[:title]
-    cell.textLabel.setFont(UIFont.fontWithName("Futura-Medium", size:14))
+    cell = tableView.dequeueReusableCellWithIdentifier(@cellId) || begin
+      ListViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:@cellId)
+    end
+  
+    cell.configure_cell(self, List.get_item_at_index(indexPath.row))
+
     cell
   end
 
@@ -38,10 +39,17 @@ class ListViewController < UIViewController
   # ACTIONS
   def didPressAddButton
     puts "pressed the add button"
+    add_controller = AddController.alloc.init
+    self.presentViewController(add_controller, animated:true, completion:nil)
   end
 
   def didPressSettingsButton
     puts "pressed the settings button"
+  end
+
+  def didActivateMenuForCell(cell)
+    @index_path = @table_view.indexPathForCell(cell)
+    show_menu(cell.frame.origin.y)
   end
 
 private
@@ -93,6 +101,21 @@ private
     @footer.frame = [[0, UIScreen.mainScreen.applicationFrame.size.height-50], [320, 50]]
     @footer.backgroundColor = UIColor.blueColor
     self.view.addSubview(@footer)
+  end
+
+  def show_menu(y_origin)
+    @menu = UIView.alloc.init unless @menu
+
+    start_x = 290
+    x_origin = 100
+
+    @menu.frame = [[start_x, y_origin+22], [0, 0]]
+
+    UIView.animateWithDuration(0.35, animations:lambda { @menu.frame = [[x_origin, y_origin+22], [200, 200]] })
+
+    @menu.backgroundColor = UIColor.greenColor;
+
+    self.view.addSubview(@menu)
   end
 
 end
