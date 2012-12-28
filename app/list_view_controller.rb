@@ -39,8 +39,8 @@ class ListViewController < UIViewController
   # ACTIONS
   def didPressAddButton
     puts "pressed the add button"
-    add_controller = AddController.alloc.init
-    self.presentViewController(add_controller, animated:true, completion:nil)
+    #add_controller = AddController.alloc.init
+    #self.presentViewController(add_controller, animated:true, completion:nil)
   end
 
   def didPressSettingsButton
@@ -49,9 +49,13 @@ class ListViewController < UIViewController
 
   def didActivateMenuForCell(cell)
     @index_path = @table_view.indexPathForCell(cell)
-    show_menu(cell.frame.origin.y)
+    # show_menu(cell.frame.origin.y)
     puts cell.frame.origin.y
     puts @table_view.contentOffset.y
+    @expandingSelect = KLExpandingSelect.alloc.initWithDelegate(self, dataSource:self)
+
+    self.view.setExpandingSelect(@expandingSelect)
+    self.view.addSubview(@expandingSelect)
   end
 
   def didPressMenuCancelBtn
@@ -69,22 +73,27 @@ private
 
   def draw_header
     @header = UIView.alloc.init
-    @header.frame = [[0, 0], [320, 35]]
-    @header.backgroundColor = UIColor.whiteColor
+    @header.frame = [[0, 0], [320, 44]]
+    @header_bg = UIImageView.alloc.initWithImage(UIImage.imageNamed("header-bg"))
+    @header_bg.frame = @header.frame
+    @header.addSubview(@header_bg)
 
     @title = UILabel.alloc.init
-    @title.frame = [[10, 0], [100, 35]]
-    @title.font = UIFont.fontWithName("Futura-Medium", size:14)
+    @title.frame = [[110, 6], [100, 35]]
+    @title.font = UIFont.fontWithName("Futura-CondensedExtraBold", size:20)
     @title.text = "Honeydew"
+    @title.backgroundColor = UIColor.clearColor
 
     @add_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-    @add_btn.frame = [[250, 5], [20, 20]]
-    @add_btn.setImage(UIImage.imageNamed("plus-sign"), forState:UIControlStateNormal)
+    @add_btn.frame = [[280, 8], [30, 30]]
+    @add_btn.setImage(UIImage.imageNamed("simple_plus"), forState:UIControlStateNormal)
+    @add_btn.setImage(UIImage.imageNamed("simple_plus_down"), forState:UIControlStateHighlighted)
     @add_btn.addTarget(self, action:"didPressAddButton", forControlEvents:UIControlEventTouchUpInside)
 
     @settings_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-    @settings_btn.frame = [[280, 5], [20, 20]]
-    @settings_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
+    @settings_btn.frame = [[10, 8], [30, 30]]
+    @settings_btn.setImage(UIImage.imageNamed("simple_minus"), forState:UIControlStateNormal)
+    @settings_btn.setImage(UIImage.imageNamed("simple_minus_down"), forState:UIControlStateHighlighted)
     @settings_btn.addTarget(self, action:"didPressSettingsButton", forControlEvents:UIControlEventTouchUpInside)
 
     @header.addSubview(@title)

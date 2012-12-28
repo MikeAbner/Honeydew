@@ -1,0 +1,167 @@
+<?xml version='1.0'?>
+<signatures version='1.0'>
+<class name='KLExpandingPetal'>
+<method selector='backgroundImage'>
+<retval type='@' declared_type='UIImageView*'/>
+</method>
+<method selector='initWithImage:'>
+<arg name='image' index='0' type='@' declared_type='UIImage*'/>
+<retval type='@' declared_type='id'/>
+</method>
+<method selector='rotationWithDuration:angle:options:completion:'>
+<arg name='duration' index='0' type='d' declared_type='NSTimeInterval'/>
+<arg name='angle' index='1' type='f' declared_type='CGFloat'/>
+<arg name='options' index='2' type='I' declared_type='UIViewAnimationOptions'/>
+<arg name='completion' index='3' function_pointer='true' type='@?' declared_type='void (^)(BOOL)'>
+<arg type='B' declared_type='BOOL'/>
+<retval type='v' declared_type='void'/>
+</arg>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='setBackgroundImage:'>
+<arg name='backgroundImage' index='0' type='@' declared_type='UIImageView*'/>
+<retval type='v' declared_type='void'/>
+</method>
+</class>
+<class name='KLExpandingSelect'>
+<method selector='collapseItems'>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='dataSource'>
+<retval type='@' declared_type='id'/>
+</method>
+<method selector='delegate'>
+<retval type='@' declared_type='id'/>
+</method>
+<method selector='expandItemsAtPoint:'>
+<arg name='point' index='0' type='{CGPoint=ff}' declared_type='CGPoint'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='indexPathForItem:'>
+<arg name='item' index='0' type='@' declared_type='KLExpandingPetal*'/>
+<retval type='@' declared_type='NSIndexPath*'/>
+</method>
+<method selector='initWithDelegate:dataSource:'>
+<arg name='delegate' index='0' type='@' declared_type='id'/>
+<arg name='dataSource' index='1' type='@' declared_type='id'/>
+<retval type='@' declared_type='id'/>
+</method>
+<method selector='petals'>
+<retval type='@' declared_type='NSArray*'/>
+</method>
+<method selector='receivingView'>
+<retval type='@' declared_type='UIView*'/>
+</method>
+<method selector='reloadItems'>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='setDataSource:'>
+<arg name='dataSource' index='0' type='@' declared_type='id'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='setDelegate:'>
+<arg name='delegate' index='0' type='@' declared_type='id'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='setPetals:'>
+<arg name='petals' index='0' type='@' declared_type='NSArray*'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='setReceivingView:'>
+<arg name='receivingView' index='0' type='@' declared_type='UIView*'/>
+<retval type='v' declared_type='void'/>
+</method>
+</class>
+<class name='NSObject'>
+<method selector='expandingSelector:didFinishCollapsingAtPoint:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='point' index='1' type='{CGPoint=ff}' declared_type='CGPoint'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didFinishCollapsingPetal:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='petal' index='1' type='@' declared_type='KLExpandingPetal*'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didFinishExpandingAtPoint:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='point' index='1' type='{CGPoint=ff}' declared_type='CGPoint'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didFinishExpandingPetal:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='petal' index='1' type='@' declared_type='KLExpandingPetal*'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didSelectItemAtIndexPath:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='indexPath' index='1' type='@' declared_type='NSIndexPath*'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:itemForRowAtIndexPath:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='indexPath' index='1' type='@' declared_type='NSIndexPath*'/>
+<retval type='@' declared_type='KLExpandingPetal*'/>
+</method>
+<method selector='expandingSelector:numberOfRowsInSection:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='section' index='1' type='i' declared_type='NSInteger'/>
+<retval type='i' declared_type='NSInteger'/>
+</method>
+<method selector='expandingSelector:willSelectItemAtIndexPath:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='indexPath' index='1' type='@' declared_type='NSIndexPath*'/>
+<retval type='@' declared_type='NSIndexPath*'/>
+</method>
+</class>
+<class name='UIView'>
+<method selector='setExpandingSelect:'>
+<arg name='expandingSelect' index='0' type='@' declared_type='KLExpandingSelect*'/>
+<retval type='v' declared_type='void'/>
+</method>
+</class>
+<informal_protocol name='KLExpandingSelectDataSource'>
+<method selector='expandingSelector:itemForRowAtIndexPath:' type='@16@0:4@8@12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='indexPath' index='1' type='@' declared_type='NSIndexPath*'/>
+<retval type='@' declared_type='KLExpandingPetal*'/>
+</method>
+<method selector='expandingSelector:numberOfRowsInSection:' type='i16@0:4@8i12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='section' index='1' type='i' declared_type='NSInteger'/>
+<retval type='i' declared_type='NSInteger'/>
+</method>
+</informal_protocol>
+<informal_protocol name='KLExpandingSelectDelegate'>
+<method selector='expandingSelector:didFinishCollapsingAtPoint:' type='v20@0:4@8{CGPoint=ff}12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='point' index='1' type='{CGPoint=ff}' declared_type='CGPoint'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didFinishCollapsingPetal:' type='v16@0:4@8@12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='petal' index='1' type='@' declared_type='KLExpandingPetal*'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didFinishExpandingAtPoint:' type='v20@0:4@8{CGPoint=ff}12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='point' index='1' type='{CGPoint=ff}' declared_type='CGPoint'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didFinishExpandingPetal:' type='v16@0:4@8@12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='petal' index='1' type='@' declared_type='KLExpandingPetal*'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:didSelectItemAtIndexPath:' type='v16@0:4@8@12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='indexPath' index='1' type='@' declared_type='NSIndexPath*'/>
+<retval type='v' declared_type='void'/>
+</method>
+<method selector='expandingSelector:willSelectItemAtIndexPath:' type='@16@0:4@8@12'>
+<arg name='expandingSelect' index='0' type='@' declared_type='id'/>
+<arg name='indexPath' index='1' type='@' declared_type='NSIndexPath*'/>
+<retval type='@' declared_type='NSIndexPath*'/>
+</method>
+</informal_protocol>
+</signatures>
