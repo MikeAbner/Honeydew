@@ -3,10 +3,10 @@ class AppDelegate
     UIApplication.sharedApplication.setStatusBarHidden(true, animated:false)
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
   
-  	@list = ListViewController.alloc
-  	@list.wantsFullScreenLayout = true
+  	@task_list = TaskListViewController.alloc
+  	@task_list.wantsFullScreenLayout = true
 
-    @window.rootViewController = @list
+    @window.rootViewController = @task_list
 
     @window.makeKeyAndVisible
 
