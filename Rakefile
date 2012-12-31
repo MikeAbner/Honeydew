@@ -7,6 +7,7 @@ Motion::Project::App.setup do |app|
   app.name = 'Honeydew'
   app.identifier = 'com.mike-abner.honeydew'
   app.seed_id = 'ZNPUGVU55F'
+  app.codesign_certificate = 'iPhone Developer: Michael Abner (L322L8N727)'
   app.provisioning_profile = '/Users/mabner/Library/MobileDevice/Provisioning Profiles/5CF2FE83-DAEE-4591-9DEF-5CCA85EBB934.mobileprovision'
   app.deployment_target = '5.0'
   app.interface_orientations = [:portrait]
