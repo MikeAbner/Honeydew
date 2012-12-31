@@ -65,6 +65,8 @@ class TaskListViewController < UIViewController
         @top_slider.frame     = [[0, top_slider_origin_y],    [320, slider_height]]
         @bottom_slider.frame  = [[0, bottom_slider_origin_y], [320, slider_height]]
       })
+
+      @table_view.scrollEnabled = true
     else
       if !@top_slider
         @top_slider         = UIView.alloc.init
@@ -105,6 +107,8 @@ class TaskListViewController < UIViewController
       })
 
       show_menu(@top_slider.frame.origin.y + @top_slider.frame.size.height)
+
+      @table_view.scrollEnabled = false
     end
     @sliders_shown = !@sliders_shown
   end
