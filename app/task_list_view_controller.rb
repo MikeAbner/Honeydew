@@ -48,12 +48,19 @@ class TaskListViewController < UIViewController
   end
 
   def didActivateMenuForCell(cell)
+    #scroll the cell completely into view
+    if cell.frame.origin.y - @table_view.contentOffset.y < 0
+      @table_view.scrollToRowAtIndexPath(@table_view.indexPathForCell(cell), atScrollPosition:UITableViewScrollPositionTop, animated:true)
+    end
+
+    #slide in the shades from the top and bottom
     slider_height           = UIScreen.mainScreen.applicationFrame.size.height
     top_slider_origin_y     = -slider_height
     bottom_slider_origin_y  = slider_height
 
     if @sliders_shown
       hide_menu(@top_slider.frame.origin.y + slider_height)
+
       UIView.animateWithDuration(0.35, animations:lambda { 
         @top_slider.frame     = [[0, top_slider_origin_y],    [320, slider_height]]
         @bottom_slider.frame  = [[0, bottom_slider_origin_y], [320, slider_height]]
@@ -78,13 +85,17 @@ class TaskListViewController < UIViewController
 
       top_slider_offset = @table_view.frame.origin.y + cell.frame.origin.y - @table_view.contentOffset.y
 
-      if top_slider_offset < @header.size.height
+      if top_slider_offset < @header.size.height || cell.frame.origin.y - @table_view.contentOffset.y < 0
         top_slider_offset = @header.size.height
       end
 
       top_slider_origin_y_new = top_slider_origin_y + top_slider_offset
 
-      bottom_slider_offset        = @table_view.frame.origin.y + cell.frame.origin.y + cell.frame.size.height - @table_view.contentOffset.y
+      bottom_slider_offset = @table_view.frame.origin.y + cell.frame.origin.y + cell.frame.size.height - @table_view.contentOffset.y
+
+      if cell.frame.origin.y - @table_view.contentOffset.y < 0
+        bottom_slider_offset = @table_view.frame.origin.y + cell.frame.size.height
+      end
 
       UIView.animateWithDuration(0.35, animations:lambda { 
         @top_slider.frame     = [[0, top_slider_origin_y_new], [320, slider_height]] 
