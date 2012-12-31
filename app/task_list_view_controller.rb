@@ -48,7 +48,7 @@ class TaskListViewController < UIViewController
   end
 
   def didActivateMenuForCell(cell)
-    #scroll the cell completely into view
+    #scroll the cell completely into view if it is partially behind the header
     if cell.frame.origin.y - @table_view.contentOffset.y < 0
       @table_view.scrollToRowAtIndexPath(@table_view.indexPathForCell(cell), atScrollPosition:UITableViewScrollPositionTop, animated:true)
     end
@@ -85,6 +85,7 @@ class TaskListViewController < UIViewController
 
       top_slider_offset = @table_view.frame.origin.y + cell.frame.origin.y - @table_view.contentOffset.y
 
+      #if the offset is smaller than the header or the cell is being scrolled on screen
       if top_slider_offset < @header.size.height || cell.frame.origin.y - @table_view.contentOffset.y < 0
         top_slider_offset = @header.size.height
       end
@@ -93,6 +94,7 @@ class TaskListViewController < UIViewController
 
       bottom_slider_offset = @table_view.frame.origin.y + cell.frame.origin.y + cell.frame.size.height - @table_view.contentOffset.y
 
+      #adjustment needed if the cell started partially offscreen
       if cell.frame.origin.y - @table_view.contentOffset.y < 0
         bottom_slider_offset = @table_view.frame.origin.y + cell.frame.size.height
       end
