@@ -53,6 +53,7 @@ class TaskListViewController < UIViewController
     bottom_slider_origin_y  = slider_height
 
     if @sliders_shown
+      hide_menu(@top_slider.frame.origin.y + slider_height)
       UIView.animateWithDuration(0.35, animations:lambda { 
         @top_slider.frame     = [[0, top_slider_origin_y],    [320, slider_height]]
         @bottom_slider.frame  = [[0, bottom_slider_origin_y], [320, slider_height]]
@@ -89,6 +90,8 @@ class TaskListViewController < UIViewController
         @top_slider.frame     = [[0, top_slider_origin_y_new], [320, slider_height]] 
         @bottom_slider.frame  = [[0, bottom_slider_offset], [320, slider_height]]
       })
+
+      show_menu(@top_slider.frame.origin.y + @top_slider.frame.size.height)
     end
     @sliders_shown = !@sliders_shown
   end
@@ -156,52 +159,54 @@ private
     @footer.frame = [[0, UIScreen.mainScreen.applicationFrame.size.height-50], [320, 50]]
     @footer.backgroundColor = UIColor.blueColor
 
-    @ad = AdBannerView.alloc.init
-    @ad.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait
-
-    @footer.addSubview(@ad)
     self.view.addSubview(@footer)
   end
 
-  def show_menu(y_origin)
-    @menu_bg        = UIView.alloc.init unless @menu_bg
-    @menu_bg.hidden = false
-    @menu_bg.frame  = self.view.frame
-    @menu_bg.alpha  = 0.85
-    @menu_bg.backgroundColor = UIColor.lightGrayColor
+  def show_menu(top_of_cell_y)
+    y_origin = top_of_cell_y
+    start_y = -44
+    end_y   = y_origin - 44
 
-    start_x   = 290
-    x_origin  = 90
-    start_y   = @table_view.frame.origin.y
-    y_origin  = @table_view.frame.origin.y + y_origin - @table_view.contentOffset.y
-    
-    @menu         = UIView.alloc.init unless @menu
-    @menu.hidden  = false
-    @menu.frame   = [[start_x, start_y], [0, 0]]
+    if y_origin - @table_view.contentOffset.y <= 44
+      start_y = UIScreen.mainScreen.applicationFrame.size.height
+      end_y   = y_origin + 44
+    end
 
-    UIView.animateWithDuration(0.35, animations:lambda { @menu.frame = [[x_origin, y_origin], [200, 200]] })
+    if !@menu
+      @menu = UIView.alloc.init
 
-    @menu.backgroundColor = UIColor.greenColor;
-    @claim_btn = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    @claim_btn.frame = [[10, 10], [100, 25]]
-    @claim_btn.setTitle("Claim", forState:UIControlStateNormal)
+      @menu_claim_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+      @menu_claim_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
+      @menu_claim_btn.frame = [[10, 8], [30, 30]]
 
-    @assign_btn = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    @assign_btn.frame = [[10, 45], [100, 25]]
-    @assign_btn.setTitle("Assign", forState:UIControlStateNormal)
+      @menu_assign_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+      @menu_assign_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
+      @menu_assign_btn.frame = [[50, 8], [30, 30]]
 
-    @cancel_btn = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-    @cancel_btn.frame = [[10, 80], [100, 25]]
-    @cancel_btn.setTitle("Cancel", forState:UIControlStateNormal)
-    @cancel_btn.addTarget(self, action:"didPressMenuCancelBtn", forControlEvents:UIControlEventTouchUpInside)
+      @menu.addSubview(@menu_claim_btn)
+      @menu.addSubview(@menu_assign_btn)
+    end
+    @menu.frame = [[321, start_y], [320, 44]]
+    @menu.backgroundColor = UIColor.purpleColor
 
-    @menu.addSubview(@claim_btn)
-    @menu.addSubview(@assign_btn)
-    @menu.addSubview(@cancel_btn)
-
-
-    self.view.addSubview(@menu_bg)
     self.view.addSubview(@menu)
+
+    UIView.animateWithDuration(0.35, animations:lambda {
+      @menu.frame = [[0, end_y], [320, 44]]
+    })
+  end
+
+  def hide_menu(top_of_cell_y)
+    y_origin = top_of_cell_y
+    start_y = -44
+    
+    if y_origin - @table_view.contentOffset.y <= 44
+      start_y = UIScreen.mainScreen.applicationFrame.size.height
+    end
+
+    UIView.animateWithDuration(0.35, animations:lambda {
+      @menu.frame = [[321, start_y], [320, 44]]
+    })
   end
 
 end
