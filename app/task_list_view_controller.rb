@@ -191,19 +191,30 @@ private
 
     if !@menu
       @menu = UIView.alloc.init
+      @menu.clipsToBounds = true
 
       @menu_claim_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-      @menu_claim_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
-      @menu_claim_btn.frame = [[10, 8], [30, 30]]
+      @menu_claim_btn.setImage(UIImage.imageNamed("minus-sign"), forState:UIControlStateNormal)
+      @menu_claim_btn.frame = [[10+75, 8], [30, 30]]
 
       @menu_assign_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-      @menu_assign_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
-      @menu_assign_btn.frame = [[50, 8], [30, 30]]
+      @menu_assign_btn.setImage(UIImage.imageNamed("plus-sign"), forState:UIControlStateNormal)
+      @menu_assign_btn.frame = [[50+75, 8], [30, 30]]
+
+      @menu_edit_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+      @menu_edit_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
+      @menu_edit_btn.frame = [[90+75, 8], [30, 30]]
+
+      @menu_delete_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+      @menu_delete_btn.setImage(UIImage.imageNamed("unchecked"), forState:UIControlStateNormal)
+      @menu_delete_btn.frame = [[130+75, 8], [30, 30]]
 
       @menu.addSubview(@menu_claim_btn)
       @menu.addSubview(@menu_assign_btn)
+      @menu.addSubview(@menu_edit_btn)
+      @menu.addSubview(@menu_delete_btn)
     end
-    @menu.frame = [[321, start_y], [320, 44]]
+    @menu.frame = [[0, start_y], [320, 44]]
     @menu.backgroundColor = UIColor.purpleColor
 
     self.view.addSubview(@menu)
@@ -222,7 +233,7 @@ private
     end
 
     UIView.animateWithDuration(0.35, animations:lambda {
-      @menu.frame = [[321, start_y], [320, 44]]
+      @menu.frame = [[0, start_y], [320, 44]]
     })
   end
 
