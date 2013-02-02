@@ -7,37 +7,46 @@ class TaskListCell < UITableViewCell
   end
 
   def configure_cell(parent, task)
-    @parent = parent
-    @task = task
+    @parent, @task = parent, task
 
+    create_color_bar
+    create_task_name
+    create_trigger
+  end
+
+  def didPressTriggerButton
+    @parent.didActivateMenuForCell(self)
+  end
+
+private
+
+  def create_color_bar
     @color_bar = UIImageView.alloc.init
     @color_bar.frame = [[0, 0], [10, self.frame.size.height]]
-    image_name = ["clear", 
-                  "yellow_pastel", "natural_pastel", "orange_pastel", "pink_pastel", "purple_pastel", "blue_pastel", "green_pastel", 
-                  "grey_monochrome", "light-grey_monochrome", "mid-grey_monochrome", "dark-grey_monochrome",
-                  "purple_dark", "red_dark", "gold_dark", "green_dark", "orange_dark", "pink_dark", "blue_dark",
-                  "red_bright", "yellow_bright", "green_bright", "orange_bright", "pink_bright", "purple_bright", "blue_bright"].sample
+    image_name = Group.color_for(@task[:assigned_to])
     @color_bar.setImage(UIImage.imageNamed("#{image_name}_indicator")) unless image_name == "clear"
 
+    self.contentView.addSubview(@color_bar)
+  end
+
+  def create_task_name
     @task_name = UILabel.alloc.init
     @task_name.frame = [[20, 11], [240, 22]]
     @task_name.setFont(UIFont.fontWithName("Futura-Medium", size:16))
     @task_name.text = @task[:title]
     #@task_name.backgroundColor = UIColor.purpleColor
 
+    self.contentView.addSubview(@task_name)
+  end
+
+  def create_trigger
     @trigger = UIButton.buttonWithType(UIButtonTypeCustom)
     @trigger.frame = [[280, 7], [30, 30]]
     @trigger.setImage(UIImage.imageNamed("city_find_me"), forState:UIControlStateNormal)
     @trigger.setImage(UIImage.imageNamed("city_find_me_down"), forState:UIControlStateHighlighted)
-    @trigger.addTarget(self, action:"didPressActionTrigger", forControlEvents:UIControlEventTouchUpInside)
+    @trigger.addTarget(self, action:"didPressTriggerButton", forControlEvents:UIControlEventTouchUpInside)
 
-    self.contentView.addSubview(@color_bar)
-    self.contentView.addSubview(@task_name)
     self.contentView.addSubview(@trigger)
-  end
-
-  def didPressActionTrigger
-    @parent.didActivateMenuForCell(self)
   end
 
 end

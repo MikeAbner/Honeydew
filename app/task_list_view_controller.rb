@@ -48,69 +48,9 @@ class TaskListViewController < UIViewController
   end
 
   def didActivateMenuForCell(cell)
-    #scroll the cell completely into view if it is partially behind the header
-    if cell.frame.origin.y - @table_view.contentOffset.y < 0
-      @table_view.scrollToRowAtIndexPath(@table_view.indexPathForCell(cell), atScrollPosition:UITableViewScrollPositionTop, animated:true)
-    end
-
-    #slide in the shades from the top and bottom
-    slider_height           = UIScreen.mainScreen.applicationFrame.size.height
-    top_slider_origin_y     = -slider_height
-    bottom_slider_origin_y  = slider_height
-
-    if @sliders_shown
-      hide_menu(@top_slider.frame.origin.y + slider_height)
-
-      UIView.animateWithDuration(0.35, animations:lambda { 
-        @top_slider.frame     = [[0, top_slider_origin_y],    [320, slider_height]]
-        @bottom_slider.frame  = [[0, bottom_slider_origin_y], [320, slider_height]]
-      })
-
-      @table_view.scrollEnabled = true
-    else
-      if !@top_slider
-        @top_slider         = UIView.alloc.init
-        @top_slider.frame   = [[0, top_slider_origin_y], [320, slider_height]]
-        @top_slider.opaque  = false
-        @top_slider.alpha   = 0.90
-        @top_slider.backgroundColor = UIColor.blackColor
-
-        @bottom_slider        = UIView.alloc.init
-        @bottom_slider.frame  = [[0, bottom_slider_origin_y], [320, slider_height]]
-        @bottom_slider.opaque = false
-        @bottom_slider.alpha  = 0.90
-        @bottom_slider.backgroundColor = UIColor.blackColor
-
-        self.view.addSubview(@top_slider)
-        self.view.addSubview(@bottom_slider)
-      end
-
-      top_slider_offset = @table_view.frame.origin.y + cell.frame.origin.y - @table_view.contentOffset.y
-
-      #if the offset is smaller than the header or the cell is being scrolled on screen
-      if top_slider_offset < @header.size.height || cell.frame.origin.y - @table_view.contentOffset.y < 0
-        top_slider_offset = @header.size.height
-      end
-
-      top_slider_origin_y_new = top_slider_origin_y + top_slider_offset
-
-      bottom_slider_offset = @table_view.frame.origin.y + cell.frame.origin.y + cell.frame.size.height - @table_view.contentOffset.y
-
-      #adjustment needed if the cell started partially offscreen
-      if cell.frame.origin.y - @table_view.contentOffset.y < 0
-        bottom_slider_offset = @table_view.frame.origin.y + cell.frame.size.height
-      end
-
-      UIView.animateWithDuration(0.35, animations:lambda { 
-        @top_slider.frame     = [[0, top_slider_origin_y_new], [320, slider_height]] 
-        @bottom_slider.frame  = [[0, bottom_slider_offset], [320, slider_height]]
-      })
-
-      show_menu(@top_slider.frame.origin.y + @top_slider.frame.size.height)
-
-      @table_view.scrollEnabled = false
-    end
-    @sliders_shown = !@sliders_shown
+    @active_cell = cell
+    scroll_cell_fully_into_view
+    slide_in_shades
   end
 
   def didPressMenuCancelBtn
@@ -179,6 +119,75 @@ private
     self.view.addSubview(@footer)
   end
 
+  def scroll_cell_fully_into_view
+    #scroll the cell completely into view if it is partially behind the header
+    #TODO: SCROLL CELL INTO VIEW IF IT IS BEHIND THE FOOTER
+    if @active_cell.frame.origin.y - @table_view.contentOffset.y < 0
+      @table_view.scrollToRowAtIndexPath(@table_view.indexPathForCell(@active_cell), atScrollPosition:UITableViewScrollPositionTop, animated:true)
+    end
+  end
+
+  def slide_in_shades
+    #slide in the shades from the top and bottom
+    slider_height           = UIScreen.mainScreen.applicationFrame.size.height
+    top_slider_origin_y     = -slider_height
+    bottom_slider_origin_y  = slider_height
+
+    if @sliders_shown
+      hide_menu(@top_slider.frame.origin.y + slider_height)
+
+      UIView.animateWithDuration(0.35, animations:lambda { 
+        @top_slider.frame     = [[0, top_slider_origin_y],    [320, slider_height]]
+        @bottom_slider.frame  = [[0, bottom_slider_origin_y], [320, slider_height]]
+      })
+
+      @table_view.scrollEnabled = true
+    else
+      if !@top_slider
+        @top_slider         = UIView.alloc.init
+        @top_slider.frame   = [[0, top_slider_origin_y], [320, slider_height]]
+        @top_slider.opaque  = false
+        @top_slider.alpha   = 0.90
+        @top_slider.backgroundColor = UIColor.blackColor
+
+        @bottom_slider        = UIView.alloc.init
+        @bottom_slider.frame  = [[0, bottom_slider_origin_y], [320, slider_height]]
+        @bottom_slider.opaque = false
+        @bottom_slider.alpha  = 0.90
+        @bottom_slider.backgroundColor = UIColor.blackColor
+
+        self.view.addSubview(@top_slider)
+        self.view.addSubview(@bottom_slider)
+      end
+
+      top_slider_offset = @table_view.frame.origin.y + @active_cell.frame.origin.y - @table_view.contentOffset.y
+
+      #if the offset is smaller than the header or the cell is being scrolled on screen
+      if top_slider_offset < @header.size.height || @active_cell.frame.origin.y - @table_view.contentOffset.y < 0
+        top_slider_offset = @header.size.height
+      end
+
+      top_slider_origin_y_new = top_slider_origin_y + top_slider_offset
+
+      bottom_slider_offset = @table_view.frame.origin.y + @active_cell.frame.origin.y + @active_cell.frame.size.height - @table_view.contentOffset.y
+
+      #adjustment needed if the cell started partially offscreen
+      if @active_cell.frame.origin.y - @table_view.contentOffset.y < 0
+        bottom_slider_offset = @table_view.frame.origin.y + @active_cell.frame.size.height
+      end
+
+      UIView.animateWithDuration(0.35, animations:lambda { 
+        @top_slider.frame     = [[0, top_slider_origin_y_new], [320, slider_height]] 
+        @bottom_slider.frame  = [[0, bottom_slider_offset], [320, slider_height]]
+      })
+
+      show_menu(@top_slider.frame.origin.y + @top_slider.frame.size.height)
+
+      @table_view.scrollEnabled = false
+    end
+    @sliders_shown = !@sliders_shown
+  end
+
   def show_menu(top_of_cell_y)
     y_origin = top_of_cell_y
     start_y = -44
@@ -189,31 +198,17 @@ private
       end_y   = y_origin + 44
     end
 
-    if !@menu
-      @menu = UIView.alloc.init
-      @menu.clipsToBounds = true
+    @menu = UIView.alloc.init
+    @menu.clipsToBounds = true
 
-      @menu_claim_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-      @menu_claim_btn.setImage(UIImage.imageNamed("minus-sign"), forState:UIControlStateNormal)
-      @menu_claim_btn.frame = [[10+75, 8], [30, 30]]
-
-      @menu_assign_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-      @menu_assign_btn.setImage(UIImage.imageNamed("plus-sign"), forState:UIControlStateNormal)
-      @menu_assign_btn.frame = [[50+75, 8], [30, 30]]
-
-      @menu_edit_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-      @menu_edit_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
-      @menu_edit_btn.frame = [[90+75, 8], [30, 30]]
-
-      @menu_delete_btn = UIButton.buttonWithType(UIButtonTypeCustom)
-      @menu_delete_btn.setImage(UIImage.imageNamed("unchecked"), forState:UIControlStateNormal)
-      @menu_delete_btn.frame = [[130+75, 8], [30, 30]]
-
-      @menu.addSubview(@menu_claim_btn)
-      @menu.addSubview(@menu_assign_btn)
-      @menu.addSubview(@menu_edit_btn)
-      @menu.addSubview(@menu_delete_btn)
+    if (@active_cell.task[:assigned_to] == 'me')
+      draw_menu_for_owned_cell
+    elsif (@active_cell.task[:assigned_to] == 'them')
+      draw_menu_for_assigned_cell
+    else
+      draw_menu_for_unclaimed_cell
     end
+    
     @menu.frame = [[0, start_y], [320, 44]]
     @menu.backgroundColor = UIColor.purpleColor
 
@@ -222,6 +217,57 @@ private
     UIView.animateWithDuration(0.35, animations:lambda {
       @menu.frame = [[0, end_y], [320, 44]]
     })
+  end
+
+  def draw_menu_for_owned_cell
+    @menu_unclaim_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+    @menu_unclaim_btn.setImage(UIImage.imageNamed("minus-sign"), forState:UIControlStateNormal)
+    @menu_unclaim_btn.frame = [[10+75, 8], [30, 30]]
+
+    @menu_complete_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+    @menu_complete_btn.setImage(UIImage.imageNamed("plus-sign"), forState:UIControlStateNormal)
+    @menu_complete_btn.frame = [[50+75, 8], [30, 30]]
+
+    @menu.addSubview(@menu_unclaim_btn)
+    @menu.addSubview(@menu_complete_btn)
+    draw_edit_and_delete_buttons
+  end
+
+  def draw_menu_for_assigned_cell
+    @menu_claim_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+    @menu_claim_btn.setImage(UIImage.imageNamed("minus-sign"), forState:UIControlStateNormal)
+    @menu_claim_btn.frame = [[10+75, 8], [30, 30]]
+
+    @menu.addSubview(@menu_claim_btn)
+    draw_edit_and_delete_buttons
+  end
+
+  def draw_menu_for_unclaimed_cell
+    @menu_claim_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+    @menu_claim_btn.setImage(UIImage.imageNamed("minus-sign"), forState:UIControlStateNormal)
+    @menu_claim_btn.frame = [[10+75, 8], [30, 30]]
+
+    @menu_assign_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+    @menu_assign_btn.setImage(UIImage.imageNamed("plus-sign"), forState:UIControlStateNormal)
+    @menu_assign_btn.frame = [[50+75, 8], [30, 30]]
+
+    @menu.addSubview(@menu_claim_btn)
+    @menu.addSubview(@menu_assign_btn)
+    draw_edit_and_delete_buttons
+  end
+
+  def draw_edit_and_delete_buttons
+    @menu_edit_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+    @menu_edit_btn.setImage(UIImage.imageNamed("gear"), forState:UIControlStateNormal)
+    @menu_edit_btn.frame = [[90+75, 8], [30, 30]]
+
+    @menu_delete_btn = UIButton.buttonWithType(UIButtonTypeCustom)
+    @menu_delete_btn.setImage(UIImage.imageNamed("unchecked"), forState:UIControlStateNormal)
+    @menu_delete_btn.frame = [[130+75, 8], [30, 30]]
+    @menu_delete_btn.addTarget(self, action:"didPressDeleteTaskButton", forControlEvents:UIControlEventTouchUpInside)
+
+    @menu.addSubview(@menu_edit_btn)
+    @menu.addSubview(@menu_delete_btn)
   end
 
   def hide_menu(top_of_cell_y)
@@ -235,6 +281,12 @@ private
     UIView.animateWithDuration(0.35, animations:lambda {
       @menu.frame = [[0, start_y], [320, 44]]
     })
+
+    @active_cell = nil
+  end
+
+  def didPressDeleteTaskButton
+
   end
 
 end
