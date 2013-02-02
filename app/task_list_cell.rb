@@ -8,10 +8,17 @@ class TaskListCell < UITableViewCell
 
   def configure_cell(parent, task)
     @parent, @task = parent, task
-
+    
+    @overlay.removeFromSuperview unless @overlay.nil?    
     create_color_bar
     create_task_name
     create_trigger
+  end
+
+  def delete_task
+    draw_overlay
+    TaskList.delete_task(@task)
+    @parent.didDeleteTask
   end
 
   def didPressTriggerButton
@@ -47,6 +54,20 @@ private
     @trigger.addTarget(self, action:"didPressTriggerButton", forControlEvents:UIControlEventTouchUpInside)
 
     self.contentView.addSubview(@trigger)
+  end
+
+  def draw_overlay
+    @overlay = UIView.alloc.init
+    @overlay.frame = [[0, 0], self.frame.size]
+    @overlay.backgroundColor = UIColor.blackColor
+    @overlay.alpha = 0.5
+
+    spinner = UIActivityIndicatorView.alloc.initWithActivityIndicatorStyle(UIActivityIndicatorViewStyleWhite)
+    spinner.frame = [[150, 12], spinner.frame.size]
+    spinner.startAnimating
+
+    @overlay.addSubview(spinner)
+    self.contentView.addSubview(@overlay)
   end
 
 end

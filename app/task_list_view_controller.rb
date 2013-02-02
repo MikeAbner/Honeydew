@@ -50,12 +50,21 @@ class TaskListViewController < UIViewController
   def didActivateMenuForCell(cell)
     @active_cell = cell
     scroll_cell_fully_into_view
-    slide_in_shades
+    activate_shades
   end
 
   def didPressMenuCancelBtn
     @menu_bg.hidden = true
     @menu.hidden    = true
+  end
+
+  def didDeleteTask
+    UIView.animateWithDuration(0.75, animations:lambda { 
+      @active_cell.alpha = 0
+    }, completion:lambda { |finished|
+      activate_shades
+      @table_view.reloadData
+    })
   end
 
 private
@@ -127,13 +136,14 @@ private
     end
   end
 
-  def slide_in_shades
+  def activate_shades
     #slide in the shades from the top and bottom
     slider_height           = UIScreen.mainScreen.applicationFrame.size.height
     top_slider_origin_y     = -slider_height
     bottom_slider_origin_y  = slider_height
 
     if @sliders_shown
+      @active_cell = nil
       hide_menu(@top_slider.frame.origin.y + slider_height)
 
       UIView.animateWithDuration(0.35, animations:lambda { 
@@ -282,11 +292,25 @@ private
       @menu.frame = [[0, start_y], [320, 44]]
     })
 
-    @active_cell = nil
   end
 
   def didPressDeleteTaskButton
+    title = 'Delete task?'
+    msg   = 'Are you sure you want to delete this task?'
+    alert = UIAlertView.alloc.initWithTitle(title, message:msg, delegate:self, cancelButtonTitle:'No', otherButtonTitles:'Yes', nil)
+    alert.tag = 100
+    alert.show
+  end
 
+  def alertView(alert, clickedButtonAtIndex:index)
+    puts "alert view delegate method called with tag:#{alert.tag} and buttonIndex:#{index}"
+    case alert.tag
+    when 100
+      case index
+      when 1
+        @active_cell.delete_task
+      end
+    end
   end
 
 end
